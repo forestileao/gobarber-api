@@ -1,8 +1,15 @@
 import { Router } from 'express';
+import User from '../models/User';
 
 import CreateUserService from '../services/CreateUserService';
 
 const usersRouter = Router();
+
+interface ResponseUser {
+  name: string;
+  email: string;
+  password?: string;
+}
 
 usersRouter.post('/', async (request, response) => {
   try {
@@ -16,7 +23,10 @@ usersRouter.post('/', async (request, response) => {
       password,
     });
 
-    return response.json(user);
+    const responseUser: ResponseUser = user;
+    delete responseUser.password;
+
+    return response.json(responseUser);
   } catch (err) {
     return response.status(400).json({ error: err.message });
   }
