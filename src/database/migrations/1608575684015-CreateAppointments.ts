@@ -25,12 +25,12 @@ export default class CreateAppointments1608575684015
             isNullable: false,
           },
           {
-            name: 'created_at',
+            name: 'createdAt',
             type: 'timestamp',
             default: 'now()',
           },
           {
-            name: 'uptated_at',
+            name: 'updatedAt',
             type: 'timestamp',
             default: 'now()',
           },
