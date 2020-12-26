@@ -1,5 +1,8 @@
 import { startOfHour } from 'date-fns';
 import { getCustomRepository } from 'typeorm';
+import { validate } from 'uuid';
+
+import AppError from '../errors/AppError';
 
 import Appointment from '../models/Appointment';
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
@@ -20,7 +23,10 @@ class CreateAppointmentService {
     );
 
     if (findAppointmentInSameDate) {
-      throw Error('This appointment is already booked');
+      throw new AppError('This appointment is already booked');
+    }
+    if (!validate(providerId)) {
+      throw new AppError('Provider id format not supported');
     }
 
     const appointment = appointmentRepository.create({

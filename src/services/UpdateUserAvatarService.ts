@@ -1,6 +1,8 @@
-import { getRepository, Timestamp } from 'typeorm';
+import { getRepository } from 'typeorm';
 import path from 'path';
 import fs from 'fs';
+
+import AppError from '../errors/AppError';
 
 import User from '../models/User';
 import uploadConfig from '../config/upload';
@@ -21,7 +23,7 @@ class UpdateUserAvatarService {
     });
 
     if (!user) {
-      throw new Error('Only authenticated users can change avatar.');
+      throw new AppError('Only authenticated users can change avatar.', 401);
     }
 
     if (user.avatar) {
@@ -33,7 +35,7 @@ class UpdateUserAvatarService {
           await fs.promises.unlink(userAvatarFilePath);
         }
       } catch (error) {
-        console.log(`[User]: ${user.avatar} does not exists.`);
+        this.stopError();
       }
     }
 
@@ -41,6 +43,10 @@ class UpdateUserAvatarService {
     await usersRespository.save(user);
 
     return user;
+  }
+
+  private stopError(): boolean {
+    return true;
   }
 }
 

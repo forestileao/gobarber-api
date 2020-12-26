@@ -1,6 +1,5 @@
-import { request, response, Router } from 'express';
+import { Router } from 'express';
 import multer from 'multer';
-import User from '../models/User';
 import uploadConfig from '../config/upload';
 
 import CreateUserService from '../services/CreateUserService';
@@ -18,24 +17,20 @@ interface ResponseUser {
 }
 
 usersRouter.post('/', async (request, response) => {
-  try {
-    const { name, email, password } = request.body;
+  const { name, email, password } = request.body;
 
-    const createUser = new CreateUserService();
+  const createUser = new CreateUserService();
 
-    const user = await createUser.execute({
-      name,
-      email,
-      password,
-    });
+  const user = await createUser.execute({
+    name,
+    email,
+    password,
+  });
 
-    const responseUser: ResponseUser = user;
-    delete responseUser.password;
+  const responseUser: ResponseUser = user;
+  delete responseUser.password;
 
-    return response.json(responseUser);
-  } catch (err) {
-    return response.status(400).json({ error: err.message });
-  }
+  return response.json(responseUser);
 });
 
 usersRouter.patch(
@@ -43,18 +38,14 @@ usersRouter.patch(
   ensureAuthenticated,
   upload.single('avatar'),
   async (request, response) => {
-    try {
-      const updateUserAvatar = new UpdateUserAvatarService();
+    const updateUserAvatar = new UpdateUserAvatarService();
 
-      const { password, ...userResponse } = await updateUserAvatar.execute({
-        userId: request.user.id,
-        avatarFileName: request.file.filename,
-      });
+    const { password, ...userResponse } = await updateUserAvatar.execute({
+      userId: request.user.id,
+      avatarFileName: request.file.filename,
+    });
 
-      return response.json(userResponse);
-    } catch (err) {
-      return response.json({ error: err.message });
-    }
+    return response.json(userResponse);
   },
 );
 
