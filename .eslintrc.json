@@ -19,6 +19,9 @@
     "prettier"
   ],
   "rules": {
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "argsIgnorePattern": "_"
+    }],
     "no-shadow": "off",
     "class-methods-use-this": "off",
     "prettier/prettier": "error",

@@ -40,6 +40,7 @@ usersRouter.patch(
   async (request, response) => {
     const updateUserAvatar = new UpdateUserAvatarService();
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userResponse } = await updateUserAvatar.execute({
       userId: request.user.id,
       avatarFileName: request.file.filename,
