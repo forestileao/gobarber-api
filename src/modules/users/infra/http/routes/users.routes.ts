@@ -1,16 +1,15 @@
 import { Router } from 'express';
+import { container } from 'tsyringe';
 import multer from 'multer';
 import CreateUserService from '@modules/users/services/CreateUserService';
 import uploadConfig from '@config/upload';
 
-import UsersRepository from '@modules/users/infra/typeorm/repositories/UsersRepository';
 import UpdateUserAvatarService from '@modules/users/services/UpdateUserAvatarService';
 
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const usersRouter = Router();
 const upload = multer(uploadConfig);
-const usersRepository = new UsersRepository();
 
 interface IResponseUser {
   name: string;
@@ -21,7 +20,7 @@ interface IResponseUser {
 usersRouter.post('/', async (request, response) => {
   const { name, email, password } = request.body;
 
-  const createUser = new CreateUserService(usersRepository);
+  const createUser = container.resolve(CreateUserService);
 
   const user = await createUser.execute({
     name,
@@ -40,7 +39,7 @@ usersRouter.patch(
   ensureAuthenticated,
   upload.single('avatar'),
   async (request, response) => {
-    const updateUserAvatar = new UpdateUserAvatarService(usersRepository);
+    const updateUserAvatar = container.resolve(UpdateUserAvatarService);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...userResponse } = await updateUserAvatar.execute({
